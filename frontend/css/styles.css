@@ -1,0 +1,21 @@
+#login {
+    text-align: center;
+    margin-top: 50px;
+}
+input {
+    display: block;
+    margin: 10px auto;
+    padding: 8px;
+    width: 80%;
+}
+button {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+.hidden {
+    display: none;
+}
+#errorMsg {
+    color: red;
+    margin-top: 10px;
+}
