@@ -1,7 +1,3 @@
-const email = document.getElementById("email");
-
-email.addEventListener("change", changeEmail);
-
-function changeEmail(event){
+document.getElementById('email').addEventListener('change', function(event) {
     console.log(event.target.value);
-}
+  })
