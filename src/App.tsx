@@ -1,25 +1,20 @@
 import React, { useState } from "react";
 import { Mail, Lock, LogIn } from "lucide-react";
 
-/**
- * The main app component.
- *
- * This component renders a login form with email and password inputs. When the
- * form is submitted, it sends a POST request to the server with the credentials
- * and handles the response. If the login is successful, it logs the user in and
- * redirects to the home page. If the login fails, it shows an error message.
- */
 function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  /**
-   * Handle the login form submission.
-   * @param {React.FormEvent} e The form event.
-   * @returns {Promise<void>} A promise that resolves when the login is complete.
-   */
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setIsLoading(true);
+
+    // デバッグ用：リクエストの内容を確認
+    console.log("送信するデータ:", { email, password });
+
     try {
       const response = await fetch("http://localhost:8000/auth/login", {
         method: "POST",
@@ -29,15 +24,30 @@ function App() {
         body: JSON.stringify({ email, password }),
       });
 
+      // デバッグ用：レスポンスの詳細を確認
+      console.log("ステータスコード:", response.status);
+      console.log(
+        "レスポンスヘッダー:",
+        Object.fromEntries(response.headers.entries())
+      );
+
+      const data = await response.json();
+      console.log("レスポンスデータ:", data);
+
       if (response.ok) {
-        const data = await response.json();
-        // Store the token or handle successful login
-        console.log("Login successful:", data);
+        // 成功時の処理
+        console.log("ログイン成功:", data);
       } else {
-        console.error("Login failed");
+        // エラー時の処理
+        setError(data.detail || "ログインに失敗しました");
+        console.error("ログインエラー:", data);
       }
     } catch (error) {
-      console.error("Error during login:", error);
+      // ネットワークエラーなどの例外処理
+      console.error("通信エラー:", error);
+      setError("サーバーとの通信に失敗しました");
+    } finally {
+      setIsLoading(false);
     }
   };
 
